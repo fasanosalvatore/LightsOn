@@ -1,0 +1,29 @@
+apiVersion: "nuclio.io/v1"
+kind: Function
+metadata:
+  name: save-light-on
+  namespace: nuclio
+spec:
+  handler: "main:handler"
+  description: "This function is performed when messages arrive on the topic iot/lights/+, it saves in redis the moment when a light is switched on or off."
+  runtime: nodejs
+  image: "nuclio/save-light-on:latest"
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPU: 75
+  triggers:
+    mqttTrigger:
+      kind: "mqtt"
+      url: "guest:guest@rabbitmq:1883"
+      attributes:
+          subscriptions:
+          - topic: iot/lights/+
+            qos: 0
+  build:
+    functionSourceCode: Y29uc3QgcmVkaXMgPSByZXF1aXJlKCJyZWRpcyIpOwoKZXhwb3J0cy5oYW5kbGVyID0gZnVuY3Rpb24oY29udGV4dCwgZXZlbnQpIHsKICBjb25zdCBjbGllbnQgPSByZWRpcy5jcmVhdGVDbGllbnQoe2hvc3Q6ICJyZWRpcyJ9KTsKICBjb25zdCBkYXRhID0gQnVmZmVyLmZyb20oSlNPTi5wYXJzZShKU09OLnN0cmluZ2lmeShldmVudCkpLmJvZHkuZGF0YSkudG9TdHJpbmcoKTsKICBjb25zdCBkZXZpY2UgPSBldmVudC51cmwuc3BsaXQoIi8iKVsyXSB8fCAidGVzdCIKCiAgaWYoZGF0YSA9PT0gIm9mZiIpIHsKICAgIGNsaWVudC5kZWwoZGV2aWNlLCAoKSA9PiB7CiAgICAgIGNvbnRleHQuY2FsbGJhY2soYExpZ2h0IGJ1bGIgJHtkZXZpY2V9IGhhcyBiZWVuIHR1cm5lZCBvZmZgKTsKICAgIH0pOwogIH0gZWxzZSB7CiAgICBjbGllbnQuZ2V0KGRldmljZSwgKGVyciwgcmVwbHkpID0+IHsKICAgICAgaWYoIXJlcGx5KSB7CiAgICAgICAgY2xpZW50LnNldChkZXZpY2UsIG5ldyBEYXRlKCkudG9TdHJpbmcoKSkKICAgICAgICBjb250ZXh0LmNhbGxiYWNrKGBMaWdodCBidWxiICR7ZGV2aWNlfSBoYXMgYmVlbiB0dXJuZWQgb25gKTsKICAgICAgfSBlbHNlIHsKICAgICAgICBjb250ZXh0LmNhbGxiYWNrKGBMaWdodCBidWxiICR7ZGV2aWNlfSB3YXMgb24gYWxyZWFkeWApOwogICAgICB9CiAgICB9KQogIH0KCiAgLy8gY2xpZW50LnF1aXQoKTsKfTsK
+    commands:
+      - 'npm install redis'
+    codeEntryType: sourceCode
+  platform:
+    attributes:
+      network: lightson_default
