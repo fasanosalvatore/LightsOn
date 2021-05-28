@@ -1,14 +1,11 @@
-import mqtt from 'mqtt'
-import {useEffect} from 'react'
+import { useEffect } from 'react'
+import { getMqttClient } from './lib/mqttClient';
 import LightIcon from './LightIcon'
+
+const client = getMqttClient();
 
 function Light({light, setLights, setActiveLight}) {
   useEffect(() => {
-    const client = mqtt.connect('ws://localhost:15675', {
-      path: "/ws",
-      username: "guest",
-      password: "guest"
-    })
     client.on('connect', function () {
       client.subscribe(`iot/lights/${light.id}`)
     })

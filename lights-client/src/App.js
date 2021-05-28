@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react'
 import toast, { Toaster } from 'react-hot-toast';
 import Light from './Light';
 import { ChromePicker } from 'react-color';
-import {client} from "./lib/mqttClient"
+import { getMqttClient } from "./lib/mqttClient"
 import NewLight from './NewLight';
 
 
@@ -12,6 +12,8 @@ const defaultLights = [
     color: "black"
   }
 ]
+
+const client = getMqttClient();
 
 function App() {
   const [lights, setLights] = useState(defaultLights);
