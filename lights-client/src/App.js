@@ -13,7 +13,8 @@ const defaultLights = [
   }
 ]
 
-const client = getMqttClient();
+let client;
+getMqttClient().then(res => client = res)
 
 function App() {
   const [lights, setLights] = useState(defaultLights);

@@ -1,10 +1,16 @@
 import mqtt from 'mqtt'
+import dns from 'dns'
+import util from 'util'
 
-export function getMqttClient(){
+const lookup = util.promisify(dns.lookup);
+
+export async function getMqttClient(){
   const host = process.env.NODE_ENV === 'production' ? 'rabbitmq' : 'localhost'
-  return mqtt.connect(`ws://${host}:15675`, {
+  const address = lookup(host);
+  return mqtt.connect(`ws://${address}`, {
     path: "/ws",
     username: "guest",
-    password: "guest"
+    password: "guest",
+    port: 15675
   })
 }

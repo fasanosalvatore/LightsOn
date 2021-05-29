@@ -2,7 +2,8 @@ import { useEffect } from 'react'
 import { getMqttClient } from './lib/mqttClient';
 import LightIcon from './LightIcon'
 
-const client = getMqttClient();
+let client;
+getMqttClient().then(res => client = res)
 
 function Light({light, setLights, setActiveLight}) {
   useEffect(() => {
