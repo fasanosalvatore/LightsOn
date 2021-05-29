@@ -2,10 +2,11 @@ import { useEffect } from 'react'
 import { getMqttClient } from './lib/mqttClient';
 import LightIcon from './LightIcon'
 
-let client;
-getMqttClient().then(res => client = res)
 
 function Light({light, setLights, setActiveLight}) {
+  let client;
+  getMqttClient().then(res => client = res)
+
   useEffect(() => {
     client.on('connect', function () {
       client.subscribe(`iot/lights/${light.id}`)
@@ -36,7 +37,7 @@ function Light({light, setLights, setActiveLight}) {
     })
 
     return () => client.end();
-  }, [light, setLights])
+  }, [light, setLights, client])
 
   return (
     // <div className="light" style={{backgroundColor: light.color}} />
