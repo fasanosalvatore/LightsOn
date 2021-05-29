@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  lights-client:
+    container_name: lights-client
+    build:
+      context: ./lights-client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      NODE_ENV: production
+
+  nuclio:
+    image: nuclio/dashboard:stable-amd64
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
+    ports:
+      - "8070:8070"
+
+  redis:
+    image: redis:6.2.3-alpine
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: cyrilix/rabbitmq-mqtt
+    ports:
+      - "9000:15672"
+      - "1883:1883"
+      - "5672:5672"
+      - "15675:15675"
