@@ -1,12 +1,14 @@
 import axios from 'axios';
 
+const host = process.env.NODE_ENV === 'production' ? '/homebridge' : ''
+
 function NewLight({lights, setLights}) {
   async function handleClick() {
-    const token = await axios.post("/api/auth/login", {
+    const token = await axios.post(`${host}/api/auth/login`, {
       username: "admin",
       password: "admin"
     })
-    const homebridgeConfig = await axios.get("/api/config-editor/plugin/homebridge-mqttthing", {
+    const homebridgeConfig = await axios.get(`${host}/api/config-editor/plugin/homebridge-mqttthing`, {
       headers: {
         'Authorization': `Bearer ${token.data.access_token}`
       }
@@ -31,13 +33,13 @@ function NewLight({lights, setLights}) {
       accessory: "mqttthing"
     }
     homebridgeConfig.data.push(newLight)
-    await axios.post("/api/config-editor/plugin/homebridge-mqttthing", homebridgeConfig.data, {
+    await axios.post(`${host}/api/config-editor/plugin/homebridge-mqttthing`, homebridgeConfig.data, {
       headers: {
         'Authorization': `Bearer ${token.data.access_token}`
       }
     })
 
-    await axios.put("/api/server/restart", {}, {
+    await axios.put(`${host}/api/server/restart`, {}, {
       headers: {
         'Authorization': `Bearer ${token.data.access_token}`
       }
