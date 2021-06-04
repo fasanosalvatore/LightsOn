@@ -1,21 +1,20 @@
-import { useEffect } from 'react'
-import { getMqttClient } from './lib/mqttClient';
-import LightIcon from './LightIcon'
+import { useEffect } from "react";
+import { getMqttClient } from "./lib/mqttClient";
+import LightIcon from "./LightIcon";
 
-
-function Light({light, setLights, setActiveLight}) {
+function Light({ light, setLights, setActiveLight }) {
   let client;
-  getMqttClient().then(res => client = res)
+  getMqttClient().then((res) => (client = res));
 
   useEffect(() => {
-    client.on('connect', function () {
-      client.subscribe(`iot/lights/${light.id}`)
-    })
+    client.on("connect", function () {
+      client.subscribe(`iot/lights/${light.id}`);
+    });
 
-    client.on('message', function (topic, message) {
+    client.on("message", function (topic, message) {
       const stringMessage = message.toString();
       let color;
-      switch(stringMessage) {
+      switch (stringMessage) {
         case "off": {
           color = "black";
           break;
@@ -24,27 +23,31 @@ function Light({light, setLights, setActiveLight}) {
           color = "#ffffed";
           break;
         }
-        case "#f0f0ff": { //First message of homebridge for confirm
-          color = "#000000";
+        case "#f0f0ff": {
+          //First message of homebridge for confirm
+          color = "black";
           break;
         }
-        default: color = stringMessage;
+        default:
+          color = stringMessage;
       }
-      setLights(oldLights => oldLights.map(oldLight => {
-        if(oldLight.id === light.id) oldLight.color = color;
-        return oldLight;
-      }))
-    })
+      setLights((oldLights) =>
+        oldLights.map((oldLight) => {
+          if (oldLight.id === light.id) oldLight.color = color;
+          return oldLight;
+        })
+      );
+    });
 
     return () => client.end();
-  }, [light, setLights, client])
+  }, [light, setLights, client]);
 
   return (
     // <div className="light" style={{backgroundColor: light.color}} />
-      <button className="light" onClick={() => setActiveLight(light)}>
-        <LightIcon color={light.color} />
-      </button>
-  )
+    <button className="light" onClick={() => setActiveLight(light)}>
+      <LightIcon color={light.color} />
+    </button>
+  );
 }
 
-export default Light
+export default Light;
