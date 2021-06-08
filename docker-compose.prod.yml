@@ -21,6 +21,12 @@ services:
     ports:
       - "8070:8070"
 
+  nuctl:
+    image: salvatorefasano/create-nuclio-functions:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
+
   redis:
     image: redis:6.2.3-alpine
     ports:
