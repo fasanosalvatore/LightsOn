@@ -128,4 +128,4 @@ Now you need to run the following command.
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
-To deploy the Nuclio functions there is no need to make changes, just access localhost: 8070, create a new project, import and deploy the functions from the `nuclio-functions/nuclio-light-on-control.yml` and `nuclio-functions/nuclio-save-light-on.js`: at the end of the .yml files it is specified in which docker network the containers must be located, again to take advantage of Docker's DNS.
+The Nuclio functions will be deployed automatically: the `salvatorefasano/create-nuclio-functions` image allows you to deploy these functions automatically using the `nuctl` CLI (there are no changes to be made because, at the end of the `yml` files, it is specified in which network to create the function, again to take advantage of Docker's DNS).
