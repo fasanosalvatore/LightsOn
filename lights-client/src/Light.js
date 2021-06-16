@@ -1,8 +1,9 @@
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 import { getMqttClient } from "./lib/mqttClient";
 import LightIcon from "./LightIcon";
 
-function Light({ light, setLights, setActiveLight }) {
+function Light({ light, setLights, setActiveLight, isLastAdded }) {
   let client;
   getMqttClient().then((res) => (client = res));
 
@@ -16,7 +17,7 @@ function Light({ light, setLights, setActiveLight }) {
       let color;
       switch (stringMessage) {
         case "off": {
-          color = "black";
+          color = "#000000";
           break;
         }
         case "on": {
@@ -25,7 +26,13 @@ function Light({ light, setLights, setActiveLight }) {
         }
         case "#f0f0ff": {
           //First message of homebridge for confirm
-          color = "black";
+          color = "#000000";
+          client.publish(`iot/lights/${light.id}`, "off");
+          if (isLastAdded) {
+            toast(`Light bulb ${light.id} is now available!`, {
+              icon: "💡",
+            });
+          }
           break;
         }
         default:
@@ -40,7 +47,7 @@ function Light({ light, setLights, setActiveLight }) {
     });
 
     return () => client.end();
-  }, [light, setLights, client]);
+  }, [light, setLights, client, isLastAdded]);
 
   return (
     // <div className="light" style={{backgroundColor: light.color}} />
