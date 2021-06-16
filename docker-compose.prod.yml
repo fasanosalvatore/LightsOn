@@ -2,10 +2,11 @@ version: "3.9"
 
 services:
   lights-client:
-    container_name: lights-client
-    build:
-      context: ./lights-client
-      dockerfile: Dockerfile
+    # container_name: lights-client
+    # build:
+    #   context: ./lights-client
+    #   dockerfile: Dockerfile
+    image: salvatorefasano/sciot-lights-client:latest
     ports:
       - "80:80"
     volumes:
@@ -21,12 +22,6 @@ services:
     ports:
       - "8070:8070"
 
-  nuctl:
-    image: salvatorefasano/create-nuclio-functions:latest
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /tmp:/tmp
-
   redis:
     image: redis:6.2.3-alpine
     ports:
@@ -39,3 +34,18 @@ services:
       - "1883:1883"
       - "5672:5672"
       - "15675:15675"
+
+  nuctl:
+    # container_name: nuctl
+    # build:
+    #   context: ./nuclio-functions
+    #   dockerfile: Dockerfile
+    image: salvatorefasano/create-nuclio-functions:latest
+    command: ["./wait-for-it.sh", "rabbitmq:1883", "--", "./funcs/start.sh"]
+    volumes:
+      - ./utility/wait-for-it.sh:/wait-for-it.sh
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
+    depends_on:
+      - nuclio
+      - rabbitmq
